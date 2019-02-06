@@ -1,0 +1,89 @@
+buildscript {
+	ext {
+		springBootVersion = '2.1.0.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+		maven { url "$artifactory/public" }
+		maven { url "$artifactory/internal-artifacts" }
+		maven { url "$artifactory/plugins-release" }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'eclipse'
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.paychex.standalone'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+	
+	//everything below should be able to be commented out assuming access to mavenCentral
+	maven { url "$artifactory/plugins-release" }
+	maven { url "$artifactory/public" }
+	
+	ivy { 
+		url "$artifactory/prerelease" 
+		layout 'pattern' , {
+			ivy '[organisation]/[module]/[revision]/ivy-[revision].xml'
+			artifact '[organization]/[module]/[revision]/[type]/[artifact]-[revision].[ext]'
+		}
+	}
+	
+	ivy { url "$artifactory/external" 
+		layout 'pattern' , {
+			ivy '[organisation]/[module]/[revision]/ivy-[revision].xml'
+			artifact '[organization]/[module]/[revision]/[type]/[artifact]-[revision].[ext]'
+		}
+	}
+	maven { url "$artifactory/prerelease" }
+	maven { url "$artifactory/internal-artifacts" }
+	maven { url "$artifactory/libs-prerelease-local" }
+	maven { url '$artifactory/external' }
+}
+
+bootRun {
+    def args = []
+    if ( System.env['APPD_AGENT'] != null ) {
+    	args << "-javaagent:$System.env.APPD_AGENT/javaagent.jar"
+    	args << "-Dallow.unsigned.sdk.extension.jars=true"
+    	args << "-Dappagent.install.dir=$System.env.APPD_AGENT"
+    }
+    jvmArgs = args.toList()
+}
+
+dependencies {
+	    
+	//our current version uses the default for netty    
+    implementation('org.springframework.boot:spring-boot-starter-webflux') //{
+    //    exclude group: 'io.netty'
+    //}
+	
+	//However, we will soon be moving to the next netty point release 
+	
+    //implementation("io.netty:netty-buffer:${nettyVersion}")
+    //implementation("io.netty:netty-codec:${nettyVersion}")
+    //implementation("io.netty:netty-codec-http:${nettyVersion}")
+    //implementation("io.netty:netty-codec-http2:${nettyVersion}")
+    //implementation("io.netty:netty-codec-socks:${nettyVersion}")
+    //implementation("io.netty:netty-common:${nettyVersion}")
+    //implementation("io.netty:netty-handler:${nettyVersion}")
+    //implementation("io.netty:netty-handler-proxy:${nettyVersion}")
+    //implementation("io.netty:netty-resolver:${nettyVersion}")
+    //implementation("io.netty:netty-transport:${nettyVersion}")
+    //implementation("io.netty:netty-transport-native-epoll:${nettyVersion}")
+    //implementation("io.netty:netty-transport-native-unix-common:${nettyVersion}")
+	
+	runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+	compileOnly 'org.projectlombok:lombok'
+    compile 'io.projectreactor.addons:reactor-extra:3+'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+}
