@@ -19,5 +19,5 @@ Expected:
 - A business transaction will be created for /service/person
 
 Nice to have:
-- An business transaction will be created for /remote/person that automatically recognizes the parameterized request string.
-- An business transaction will be created for /service/person that automatically recognizes the parameterized request string.
+- A business transaction will be created for /remote/person that automatically recognizes the parameterized request string.
+- A business transaction will be created for /service/person that automatically recognizes the parameterized request string.
