@@ -1,10 +1,13 @@
 # Webflux Standalone Test
 
+Usage:
+<p> Clone the repo. </p>
+
 <p>Set APPD_AGENT environment variable to agent install path</p>
 
 <p>Adjust serviceUrl in StandaloneRemoteAndServiceHandler.java if neccesary.</p>
 
-Usage: 
+Run:
     `gradlew bootRun`
 
 Then request:
